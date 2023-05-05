@@ -9,13 +9,14 @@ from datetime import datetime
 import joblib
 
 # Load dataset into a pandas DataFrame
+
+
 class BestRoomRatePredictorModelCreator:
 
-    # default constructor
+    # class constructor
     def __init__(self):
         self.model = None
 
-    
     def setup(self, file_name, file_to_save):
         self.model = None
         self.df = self.load_data(file_name)
@@ -33,10 +34,11 @@ class BestRoomRatePredictorModelCreator:
         return None
 
     def clean_data(self):
-        #Convert text Date to pythin datetime object
-        self.df["date_col"] = pd.to_datetime(self.df["Date"], format="%d/%m/%Y")
+        # Convert text Date to pythin datetime object
+        self.df["date_col"] = pd.to_datetime(
+            self.df["Date"], format="%d/%m/%Y")
 
-        # we need to get the day of the week and month 
+        # we need to get the day of the week and month
         self.df["month"] = self.df["date_col"].dt.month
         self.df["day_of_week"] = self.df["date_col"].dt.dayofweek
 
@@ -72,7 +74,8 @@ class BestRoomRatePredictorModelCreator:
         y = self.df["RoomPrice"]
 
         # Split the dataset into training and testing sets
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=42)
 
         # Train a linear regression model on the training set
         model = LinearRegression()
@@ -81,26 +84,26 @@ class BestRoomRatePredictorModelCreator:
         y_pred = model.predict(X_test)
         # Evaluate the model's performance on the testing set using mean squared error
         mse = mean_squared_error(y_test, y_pred)
-        score = model.score(X_test,y_test)
+        score = model.score(X_test, y_test)
         print("Mean Squared Error:", mse)
         print("Score:", score)
-        if score > 0.75 :
+        if score > 0.75:
             self.model = model
         else:
-            raise Exception("Model score lower than minimum expectation. Please check data")
+            raise Exception(
+                "Model score lower than minimum expectation. Please check data")
 
     # Save the model to be used in the future
     def save_model(self, file_name):
         if file_name is not None:
             joblib.dump(self.model, file_name)
-            
+
     # Retrieve the model use in any application
     def get_model(self, file_name=None):
         if file_name is not None:
             self.model = joblib.load(file_name)
 
         return self.model
-             
 
 
 def predict_and_test_model(model):
@@ -117,8 +120,8 @@ def predict_and_test_model(model):
             "EventLocationcode": "2",
             "month": "05",
             "day_of_week": "1",
-            "RoomType":"Superior Twin Room",
-            "EventType":"Musical Show",
+            "RoomType": "Superior Twin Room",
+            "EventType": "Musical Show",
         },
         {
             "RoomTypeCode": "2",
@@ -130,8 +133,8 @@ def predict_and_test_model(model):
             "EventLocationcode": "2",
             "month": "05",
             "day_of_week": "1",
-            "RoomType":"Superior King Room",
-            "EventType":"Musical Show",
+            "RoomType": "Superior King Room",
+            "EventType": "Musical Show",
         },
         {
             "RoomTypeCode": "3",
@@ -143,8 +146,8 @@ def predict_and_test_model(model):
             "EventLocationcode": "2",
             "month": "05",
             "day_of_week": "1",
-            "RoomType":"Premium Double Room",
-            "EventType":"Musical Show",
+            "RoomType": "Premium Double Room",
+            "EventType": "Musical Show",
         },
         {
             "RoomTypeCode": "4",
@@ -156,8 +159,8 @@ def predict_and_test_model(model):
             "EventLocationcode": "2",
             "month": "05",
             "day_of_week": "1",
-            "RoomType":"Executive Room",
-            "EventType":"Musical Show",
+            "RoomType": "Executive Room",
+            "EventType": "Musical Show",
         },
         {
             "RoomTypeCode": "5",
@@ -169,8 +172,8 @@ def predict_and_test_model(model):
             "EventLocationcode": "2",
             "month": "05",
             "day_of_week": "1",
-            "RoomType":"Cilantro Suite",
-            "EventType":"Musical Show",
+            "RoomType": "Cilantro Suite",
+            "EventType": "Musical Show",
         },
     ]
 
@@ -179,13 +182,14 @@ def predict_and_test_model(model):
 
         # Prepare the input to match the data used to fit model
         df_new = df.drop(["RoomType", "EventType"], axis=1)
-        
+
         # predict rates for given room type for event details
         room_rate = model.predict(df_new)
 
         print(
             "Predicted room {} rate for the event {} : {}".format(
-                room["RoomType"], room["EventType"], str(round(room_rate[0],2))
+                room["RoomType"], room["EventType"], str(
+                    round(room_rate[0], 2))
             )
         )
 
@@ -194,6 +198,7 @@ if __name__ == "__main__":
     cvs_name = "./Hotel_Dataset.csv"
     model_file_name = "./best_room_rate_predictor.joblib"
     predictor = BestRoomRatePredictorModelCreator()
+
     # predictor.setup(cvs_name, model_file_name)
     model = predictor.get_model(file_name=model_file_name)
     predict_and_test_model(model)
