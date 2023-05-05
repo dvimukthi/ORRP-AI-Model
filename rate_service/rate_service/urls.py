@@ -16,12 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from api.views import event_list, event_create, get_best_room_rates
+from api.views import get_best_room_rates
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/events/", event_list, name='event-list'),
-    path('api/events/create/', event_create, name='api-event-create'),
-    path('api/events/get_best_room_rates/', get_best_room_rates, name='api-event-getbestrates'),
-    
+    # path("api/events/", event_list, name='event-list'),
+    # path('api/events/create/', event_create, name='api-event-create'),
+    path('api/events/get_best_room_rates/',
+         get_best_room_rates, name='api-event-getbestrates'),
+
 ]
